@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aliyun.iotx.haas.tdserver.dal.dao.product.ModuleInfoDAO">
+    <sql id="column">
+        id                                  as id
+        ,gmt_create                         as gmtCreate
+        ,gmt_modified                       as gmtModified
+        ,is_deleted                         as isDeleted
+        ,is_support_oneline                 as isSupportOneline
+        ,overspeed_warning_type             as overspeedWarningType
+        ,is_using_storage_lock              as isUsingStorageLock
+        ,switch_type                        as switchType
+        ,trigger_type                       as triggerType
+        ,default_lock_time                  as defaultLockTime
+        ,vibration_warning_sensitivity      as vibrationWarningSensitivity
+        ,overspeed_warning_volume           as overspeedWarningVolume
+        ,is_locked_bind                     as isLockedBind
+        ,bind_time_after_poweron            as bindTimeAfterPoweron
+        ,custom_communication_instructions1 as customCommunicationInstructions1
+        ,custom_communication_instructions2 as customCommunicationInstructions2
+        ,reserve                            as reserve
+        ,reserve2                           as reserve2
+        ,environment                        as environment
+        ,odm_tenant_id                      as odmTenantId
+        ,unique_module_name                 as uniqueModuleName
+        ,unique_tdserver_product_name       as uniqueTdserverProductName
+        ,is_open_button_function            as isOpenButtonFunction
+    </sql>
+
+    <insert id="insert" parameterType="com.aliyun.iotx.haas.tdserver.dal.domain.product.ModuleInfoDO">
+        INSERT INTO iotx_haas_td_module (
+        gmt_create
+        ,gmt_modified
+        ,is_deleted
+        ,is_support_oneline
+        ,overspeed_warning_type
+        ,switch_type
+        ,trigger_type
+        ,default_lock_time
+        ,vibration_warning_sensitivity
+        ,overspeed_warning_volume
+        ,is_locked_bind
+        ,bind_time_after_poweron
+        ,custom_communication_instructions1
+        ,custom_communication_instructions2
+        ,reserve
+        ,reserve2
+        ,environment
+        ,odm_tenant_id
+        ,unique_module_name
+        ,unique_tdserver_product_name
+        ,is_open_button_function
+        ) VALUES
+        (
+        now()
+        ,now()
+        ,0
+        ,#{isSupportOneline}
+        ,#{overspeedWarningType}
+        ,#{switchType}
+        ,#{triggerType}
+        ,#{defaultLockTime}
+        ,#{vibrationWarningSensitivity}
+        ,#{overspeedWarningVolume}
+        ,#{isLockedBind}
+        ,#{bindTimeAfterPoweron}
+        ,#{customCommunicationInstructions1}
+        ,#{customCommunicationInstructions2}
+        ,#{reserve}
+        ,#{reserve2}
+        ,#{environment}
+        ,#{odmTenantId}
+        ,#{uniqueModuleName}
+        ,#{uniqueTdserverProductName}
+        ,#{isOpenButtonFunction}
+        )
+        <selectKey resultType="long" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID() AS id
+        </selectKey>
+    </insert>
+
+    <update id="updateModuleInfo" parameterType="com.aliyun.iotx.haas.tdserver.dal.domain.product.ModuleInfoDO">
+        UPDATE iotx_haas_td_module
+        SET
+        <if test="isSupportOneline != null">
+            is_support_oneline = #{isSupportOneline},
+        </if>
+        <if test="overspeedWarningType != null">
+            overspeed_warning_type = #{overspeedWarningType},
+        </if>
+        <if test="switchType != null">
+            switch_type = #{switchType},
+        </if>
+        <if test="triggerType != null">
+            trigger_type = #{triggerType},
+        </if>
+        <if test="defaultLockTime != null">
+            default_lock_time = #{defaultLockTime},
+        </if>
+        <if test="vibrationWarningSensitivity != null">
+            vibration_warning_sensitivity = #{vibrationWarningSensitivity},
+        </if>
+        <if test="overspeedWarningVolume != null">
+            overspeed_warning_volume = #{overspeedWarningVolume},
+        </if>
+        <if test="isLockedBind != null">
+            is_locked_bind = #{isLockedBind},
+        </if>
+        <if test="bindTimeAfterPoweron != null">
+            bind_time_after_poweron = #{bindTimeAfterPoweron},
+        </if>
+        <if test="customCommunicationInstructions1 != null">
+            custom_communication_instructions1 = #{customCommunicationInstructions1},
+        </if>
+        <if test="customCommunicationInstructions2 != null">
+            custom_communication_instructions2 = #{customCommunicationInstructions2},
+        </if>
+        <if test="reserve != null">
+            reserve = #{reserve},
+        </if>
+        <if test="reserve2 != null">
+            reserve2 = #{reserve2},
+        </if>
+        <if test="isOpenButtonFunction != null">
+            is_open_button_function = #{isOpenButtonFunction},
+        </if>
+        <if test="uniqueTdserverProductName != null">
+            unique_tdserver_product_name = #{uniqueTdserverProductName},
+        </if>
+        <if test="odmTenantId != null">
+            odm_tenant_id = #{odmTenantId},
+        </if>
+            gmt_modified = now()
+        WHERE unique_module_name = #{uniqueModuleName}
+        AND environment = #{environment}
+    </update>
+
+    <select id="getModuleInfoListWithOdmTenantId" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.product.ModuleInfoDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_module
+        WHERE odm_tenant_id = #{odmTenantId}
+        AND is_deleted = 0
+        AND environment = #{environment}
+        ORDER BY id DESC
+        LIMIT #{start}, #{pageSize}
+    </select>
+
+    <select id="getModuleInfoWithUniqueModuleName" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.product.ModuleInfoDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_module
+        WHERE odm_tenant_id = #{odmTenantId}
+        AND unique_module_name = #{uniqueModuleName}
+        AND is_deleted = 0
+        AND environment = #{environment}
+        LIMIT 1
+    </select>
+
+    <select id="getModuleInfoWithUniqueModuleNameOnly" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.product.ModuleInfoDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_module
+        WHERE unique_module_name = #{uniqueModuleName}
+        AND is_deleted = 0
+        AND environment = #{environment}
+        LIMIT 1
+    </select>
+
+    <select id="getModuleInfoWithUniqueTdserverProductName" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.product.ModuleInfoDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_module
+        WHERE odm_tenant_id = #{odmTenantId}
+        AND unique_tdserver_product_name = #{uniqueTdserverProductName}
+        AND is_deleted = 0
+        AND environment = #{environment}
+        LIMIT 1
+    </select>
+
+    <update id="deleteModuleWithUniqueTdserverProductName">
+        UPDATE iotx_haas_td_module
+        SET is_deleted = 1, gmt_modified = now()
+        WHERE odm_tenant_id = #{odmTenantId}
+          AND unique_tdserver_product_name = #{uniqueTdserverProductName}
+    </update>
+
+</mapper>

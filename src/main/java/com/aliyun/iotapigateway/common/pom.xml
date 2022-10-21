@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>iotx-haas-tdserver</artifactId>
+        <groupId>com.aliyun.iotx</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>iotx-haas-tdserver-common</artifactId>
+
+    <dependencies>
+
+        <!-- ********************************************************** -->
+        <!-- 1. 项目内模块依赖                                            -->
+        <!-- ********************************************************** -->
+
+        <dependency>
+            <groupId>com.aliyun.iotx</groupId>
+            <artifactId>iotx-haas-tdserver-facade</artifactId>
+        </dependency>
+
+        <!-- ********************************************************** -->
+        <!-- 2. 二方库依赖：项目二方库、Ali中间件、Ali功能包                 -->
+        <!-- ********************************************************** -->
+
+        <!-- ======== 2.1. 项目二方库 =================================== -->
+
+        <dependency>
+            <groupId>com.aliyun.iotx.haas</groupId>
+            <artifactId>iotx-haas-common-security-autoconfigure</artifactId>
+        </dependency>
+
+        <!-- ======== 2.2. Ali中间件 =================================== -->
+
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.fastvalidator</groupId>
+            <artifactId>fastvalidator-spring-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.security</groupId>
+            <artifactId>security-all</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.taobao.keycenter</groupId>
+            <artifactId>keycenter-client</artifactId>
+            <version>2.3.9</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-kms</artifactId>
+            <version>2.7.0</version>
+        </dependency>
+
+        <!-- ======== 2.3. Ali功能包 =================================== -->
+
+        <!-- ********************************************************** -->
+        <!-- 3. 三方库依赖, 顺序:Spring/Apache/Google/Web/Log/DB/Other     -->
+        <!-- ********************************************************** -->
+        <!-- ======== 3.1. Spring ===================================== -->
+
+        <!-- ======== 3.2. Apache ===================================== -->
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.middleware</groupId>
+            <artifactId>eagleeye-core-sdk</artifactId>
+            <version>1.9.2.1--2020-07-release</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- ======== 3.3. Google ===================================== -->
+
+        <!-- ======== 3.4. Web ======================================== -->
+
+        <!-- ======== 3.5. Log ======================================== -->
+
+        <!-- ======== 3.6. Database =================================== -->
+
+        <!-- ======== 3.7. Test  ===================================== -->
+
+        <!-- ======== 3.8. Other ====================================== -->
+    </dependencies>
+</project>

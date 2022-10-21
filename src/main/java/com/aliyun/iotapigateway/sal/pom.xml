@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>iotx-haas-tdserver</artifactId>
+        <groupId>com.aliyun.iotx</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>iotx-haas-tdserver-sal</artifactId>
+
+    <dependencies>
+
+        <!-- ********************************************************** -->
+        <!-- 1. 项目内模块依赖                                            -->
+        <!-- ********************************************************** -->
+
+        <dependency>
+            <groupId>com.aliyun.iotx</groupId>
+            <artifactId>iotx-haas-tdserver-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.aliyun.iotx.haas</groupId>
+            <artifactId>iotx-haas-common-http-autoconfigure</artifactId>
+        </dependency>
+        <!-- ********************************************************** -->
+        <!-- 2. 二方库依赖：项目二方库、Ali中间件、Ali功能包                 -->
+        <!-- ********************************************************** -->
+
+        <!-- ======== 2.1. 项目二方库 =================================== -->
+
+        <dependency>
+            <groupId>com.aliyun.iotx</groupId>
+            <artifactId>iotx-signing-center-facade</artifactId>
+        </dependency>
+
+        <!-- ======== 2.2. Ali中间件 =================================== -->
+
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-iot</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.aliyun.openservices</groupId>
+            <artifactId>ons-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>hitsdb-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.boot</groupId>
+            <artifactId>pandora-hsf-spring-boot-autoconfigure</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.aliyun.iotx</groupId>
+            <artifactId>msgcenter-core-facade</artifactId>
+            <version>1.0.40</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.aliyun.iotx</groupId>
+            <artifactId>iotx-account-service-v2</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>alibaba-dingtalk-service-sdk</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.schedulerx</groupId>
+            <artifactId>schedulerx2-spring-boot-starter</artifactId>
+        </dependency>
+
+        <!-- ======== 2.3. Ali功能包 =================================== -->
+        <dependency>
+            <groupId>com.alibaba.boot</groupId>
+            <artifactId>pandora-switchcenter-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.aliyun.iotx</groupId>
+            <artifactId>iotx-haas-tdserver-dal</artifactId>
+        </dependency>
+
+        <!-- ********************************************************** -->
+        <!-- 3. 三方库依赖, 顺序:Spring/Apache/Google/Web/Log/DB/Other     -->
+        <!-- ********************************************************** -->
+
+        <!-- ======== 3.1. Spring ===================================== -->
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+
+        <!-- ======== 3.2. Apache ===================================== -->
+
+        <!-- ======== 3.3. Google ===================================== -->
+
+        <!-- ======== 3.4. Web ======================================== -->
+
+        <!-- ======== 3.5. Log ======================================== -->
+
+        <!-- ======== 3.6. Database =================================== -->
+
+        <!-- ======== 3.7. Test  ===================================== -->
+
+        <!-- ======== 3.8. Other ====================================== -->
+    </dependencies>
+
+</project>

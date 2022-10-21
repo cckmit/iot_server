@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aliyun.iotx.haas.tdserver.dal.dao.odm.OdmProductKeyDAO">
+    <sql id="column">
+        id                   as id
+        ,odm_tenant_id       as odmTenantId
+        ,product_key         as productKey
+        ,pk_name             as pkName
+        ,is_default_pk       as isDefaultPk
+        ,is_univeral_pk      as isUniveralPk
+        ,reserve             as reserve
+        ,reserve2            as reserve2
+        ,is_deleted          as isDeleted
+        ,gmt_create          as gmtCreate
+        ,gmt_modified        as gmtModified
+        ,environment         as environment
+    </sql>
+
+    <insert id="insert" parameterType="com.aliyun.iotx.haas.tdserver.dal.domain.odm.OdmProductKeyDO">
+        INSERT INTO iotx_haas_td_odm_pk (
+        odm_tenant_id
+        ,product_key
+        ,pk_name
+        ,is_default_pk
+        ,is_univeral_pk
+        ,reserve
+        ,reserve2
+        ,is_deleted
+        ,gmt_create
+        ,gmt_modified
+        ,environment
+        ) VALUES
+        (
+        #{odmTenantId}
+        ,#{productKey}
+        ,#{pkName}
+        ,#{isDefaultPk}
+        ,#{isUniveralPk}
+        ,#{reserve}
+        ,#{reserve2}
+        ,0
+        ,now()
+        ,now()
+        ,#{environment}
+        )
+        <selectKey resultType="long" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID() AS id
+        </selectKey>
+    </insert>
+
+    <select id="getOdmProductKeyWithOdmTenantId" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.odm.OdmProductKeyDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_odm_pk
+        WHERE odm_tenant_id = #{odmTenantId}
+        AND is_deleted = 0
+        AND environment = #{environment}
+    </select>
+
+    <update id="updateOdmProductKey" parameterType="com.aliyun.iotx.haas.tdserver.dal.domain.odm.OdmProductKeyDO">
+        UPDATE iotx_haas_td_odm_pk
+        SET
+        <if test="pkName != null">
+            pk_name = #{pkName},
+        </if>
+        <if test="isDefaultPk != null">
+            is_default_pk = #{isDefaultPk},
+        </if>
+        <if test="isUniveralPk != null">
+            is_univeral_pk = #{isUniveralPk},
+        </if>
+        <if test="reserve != null">
+            reserve = #{reserve},
+        </if>
+        <if test="reserve2 != null">
+            reserve2 = #{reserve2},
+        </if>
+        gmt_modified = now()
+        WHERE odm_tenant_id = #{odmTenantId}
+        AND product_key = #{productKey}
+        AND is_deleted = 0
+        AND environment = #{environment}
+    </update>
+
+    <select id="getUniveralProductKey" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.odm.OdmProductKeyDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_odm_pk
+        WHERE is_deleted = 0
+        AND is_univeral_pk = 1
+        AND environment = #{environment}
+        LIMIT 1
+    </select>
+</mapper>

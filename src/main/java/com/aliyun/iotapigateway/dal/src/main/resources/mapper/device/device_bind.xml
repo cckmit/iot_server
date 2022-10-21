@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aliyun.iotx.haas.tdserver.dal.dao.device.DeviceBindDAO">
+
+    <sql id="column">
+        id                 as id
+        ,gmt_create        as gmtCreate
+        ,gmt_modified      as gmtModified
+        ,is_deleted        as isDeleted
+        ,haas_user_id      as haasUserId
+        ,product_key       as productKey
+        ,device_name       as deviceName
+        ,device_alias      as deviceAlias
+        ,k1                as k1
+        ,k2                as k2
+        ,environment       as environment
+        ,is_default_device as isDefaultDevice
+    </sql>
+
+    <insert id="addBinding" parameterType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceBindDO">
+        INSERT INTO iotx_haas_td_device_bind (
+        gmt_create
+        ,gmt_modified
+        ,is_deleted
+        ,haas_user_id
+        ,product_key
+        ,device_name
+        ,device_alias
+        ,k1
+        ,k2
+        ,environment
+        ,is_default_device
+        ) VALUES (
+        now()
+        ,now()
+        ,0
+        ,#{haasUserId}
+        ,#{productKey}
+        ,#{deviceName}
+        ,#{deviceAlias}
+        ,#{k1}
+        ,#{k2}
+        ,#{environment}
+        ,#{isDefaultDevice}
+        )
+        <selectKey resultType="long" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID() AS id
+        </selectKey>
+    </insert>
+
+    <select id="getDevicesByUserId" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceBindDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_device_bind
+        WHERE haas_user_id = #{haasUserId}
+        AND is_deleted = 0
+        AND environment = #{environment}
+    </select>
+
+    <select id="getUserIdByDevice" resultType="String">
+        SELECT
+        haas_user_id
+        FROM iotx_haas_td_device_bind
+        WHERE device_name = #{deviceName}
+        AND product_key = #{productKey}
+        AND is_deleted = 0
+        AND environment = #{environment}
+    </select>
+
+    <select id="getBinding" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceBindDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_device_bind
+        WHERE haas_user_id = #{haasUserId}
+        AND device_name = #{deviceName}
+        AND product_key = #{productKey}
+        AND is_deleted = 0
+        AND environment = #{environment}
+    </select>
+
+    <select id="getBindingForDevice" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceBindDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_device_bind
+        WHERE device_name = #{deviceName}
+        AND product_key = #{productKey}
+        AND is_deleted = 0
+        AND environment = #{environment}
+    </select>
+
+    <select id="getBindingForUser" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceBindDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_device_bind
+        WHERE haas_user_id = #{haasUserId}
+        AND is_deleted = 0
+        AND environment = #{environment}
+    </select>
+
+    <select id="getAllBoundDevice" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceBindDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_device_bind
+        WHERE is_deleted = 0
+        AND environment = #{environment}
+        ORDER BY id DESC
+        LIMIT #{start}, #{pageSize}
+    </select>
+
+    <select id="getAllBoundDeviceCount" resultType="java.lang.Long">
+        SELECT COUNT(id)
+        FROM iotx_haas_td_device_bind
+        WHERE is_deleted = 0
+        AND environment = #{environment}
+    </select>
+
+    <update id="removeBinding">
+        UPDATE iotx_haas_td_device_bind
+        SET is_deleted = 1, gmt_modified = now()
+        WHERE device_name = #{deviceName}
+        AND product_key = #{productKey}
+        AND is_deleted = 0
+        AND environment = #{environment}
+    </update>
+
+    <select id="getDefaultDeviceByUser" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceBindDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_device_bind
+        WHERE haas_user_id = #{haasUserId}
+        AND is_deleted = 0
+        AND is_default_device = 1
+        AND environment = #{environment}
+    </select>
+
+    <update id="setDefaultDevice">
+        UPDATE iotx_haas_td_device_bind
+        SET is_default_device = 1, gmt_modified = now()
+        WHERE haas_user_id = #{haasUserId}
+        AND device_name = #{deviceName}
+        AND product_key = #{productKey}
+        AND is_deleted = 0
+        AND environment = #{environment}
+    </update>
+
+    <update id="removeDefaultDevice">
+        UPDATE iotx_haas_td_device_bind
+        SET is_default_device = 0, gmt_modified = now()
+        WHERE haas_user_id = #{haasUserId}
+        AND device_name = #{deviceName}
+        AND product_key = #{productKey}
+        AND is_deleted = 0
+        AND environment = #{environment}
+    </update>
+</mapper>

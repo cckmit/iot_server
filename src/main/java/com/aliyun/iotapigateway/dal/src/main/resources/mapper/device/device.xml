@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aliyun.iotx.haas.tdserver.dal.dao.device.DeviceDAO">
+    <sql id="column">
+        id                            as id
+        ,product_key                  as productKey
+        ,device_name                  as deviceName
+        ,device_odm_serial_number     as deviceOdmSerialNumber
+        ,unique_tdserver_product_name as uniqueTdserverProductName
+        ,unique_module_name           as uniqueModuleName
+        ,odm_tenant_id                as odmTenantId
+        ,is_deleted                   as isDeleted
+        ,gmt_create                   as gmtCreate
+        ,gmt_modified                 as gmtModified
+        ,environment                  as environment
+        ,is_bound                     as isBound
+        ,is_openAutoLock              as isOpenAutoLock
+        ,gmt_bound                    as gmtBound
+    </sql>
+
+    <insert id="insert" parameterType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceDO">
+        INSERT INTO iotx_haas_td_device (
+        product_key
+        ,device_name
+        ,device_odm_serial_number
+        ,unique_tdserver_product_name
+        ,unique_module_name
+        ,odm_tenant_id
+        ,is_deleted
+        ,gmt_create
+        ,gmt_modified
+        ,environment
+        ,is_bound
+        ,is_openAutoLock
+        ,gmt_bound
+        ) VALUES
+        (
+        #{productKey}
+        ,#{deviceName}
+        ,#{deviceOdmSerialNumber}
+        ,#{uniqueTdserverProductName}
+        ,#{uniqueModuleName}
+        ,#{odmTenantId}
+        ,0
+        ,now()
+        ,now()
+        ,#{environment}
+        ,#{isBound}
+        ,#{isOpenAutoLock}
+        ,#{gmtBound}
+        )
+    </insert>
+
+    <!--将所有信息插入iotx_haas_td_device表里面，传入参数为list,通过<foreach>来遍历list-->
+    <insert id="batchInsert" parameterType="java.util.ArrayList">
+        INSERT INTO iotx_haas_td_device (
+        product_key
+        ,device_name
+        ,device_odm_serial_number
+        ,unique_tdserver_product_name
+        ,unique_module_name
+        ,odm_tenant_id
+        ,is_deleted
+        ,gmt_create
+        ,gmt_modified
+        ,environment
+        ,is_bound
+        ,is_openAutoLock
+        ,gmt_bound
+        ) VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.productKey}
+            ,#{item.deviceName}
+            ,#{item.deviceOdmSerialNumber}
+            ,#{item.uniqueTdserverProductName}
+            ,#{item.uniqueModuleName}
+            ,#{item.odmTenantId}
+            ,0
+            ,now()
+            ,now()
+            ,#{item.environment}
+            ,#{item.isBound}
+            ,#{item.isOpenAutoLock}
+            ,#{item.gmtBound}
+            )
+        </foreach>
+    </insert>
+
+    <update id="updateDeviceInfo" parameterType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceDO">
+        UPDATE iotx_haas_td_device
+        SET
+        <if test="productKey != null">
+            product_key = #{productKey},
+        </if>
+        <if test="deviceOdmSerialNumber != null">
+            device_odm_serial_number = #{deviceOdmSerialNumber},
+        </if>
+        <if test="uniqueTdserverProductName != null">
+            unique_tdserver_product_name = #{uniqueTdserverProductName},
+        </if>
+        <if test="uniqueModuleName != null">
+            unique_module_name = #{uniqueModuleName},
+        </if>
+        <if test="isBound != null">
+            is_bound = #{isBound},
+        </if>
+        <if test="isOpenAutoLock != null">
+            is_openAutoLock = #{isOpenAutoLock},
+        </if>
+        <if test="gmtBound != null">
+            gmt_bound = #{gmtBound},
+        </if>
+        <if test="odmTenantId != null">
+            odm_tenant_id = #{odmTenantId},
+        </if>
+        <if test="uniqueTdserverProductName != null">
+            unique_tdserver_product_name = #{uniqueTdserverProductName},
+        </if>
+        gmt_modified = now()
+        WHERE device_name = #{deviceName}
+        AND is_deleted = 0
+        AND environment = #{environment}
+    </update>
+
+    <update id="migrateDeviceInfo" parameterType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceDO">
+        UPDATE iotx_haas_td_device
+        SET
+        <if test="uniqueTdserverProductName != null">
+            unique_tdserver_product_name = #{uniqueTdserverProductName},
+        </if>
+        <if test="uniqueModuleName != null">
+            unique_module_name = #{uniqueModuleName},
+        </if>
+        <if test="newOdmTenantId != null">
+            odm_tenant_id = #{newOdmTenantId},
+        </if>
+        gmt_modified = now()
+        WHERE odm_tenant_id = #{odmTenantId}
+        AND product_key = #{productKey}
+        AND device_name = #{deviceName}
+        AND is_deleted = 0
+        AND environment = #{environment}
+    </update>
+
+    <select id="getDeviceWithDeviceInfo" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_device
+        WHERE odm_tenant_id = #{odmTenantId}
+        AND product_key = #{productKey}
+        AND device_name = #{deviceName}
+        AND is_deleted = 0
+        AND environment = #{environment}
+    </select>
+
+    <select id="getDeviceWithProductIdAndDeviceInfo" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_device
+        WHERE odm_tenant_id = #{odmTenantId}
+        AND unique_tdserver_product_name = #{uniqueTdserverProductName}
+        AND device_name = #{deviceName}
+        AND is_deleted = 0
+        AND environment = #{environment}
+    </select>
+
+    <select id="getDeviceWithProductKeyAndDeviceName" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_device
+        WHERE product_key = #{productKey}
+        AND device_name = #{deviceName}
+        AND is_deleted = 0
+        AND environment = #{environment}
+    </select>
+
+    <select id="getDeviceWithDeviceName" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_device
+        WHERE device_name = #{deviceName}
+        LIMIT 1
+    </select>
+
+    <select id="getDeviceWithOdmIdAndProductKey" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_device
+        WHERE odm_tenant_id = #{odmTenantId}
+        AND product_key = #{productKey}
+        AND is_deleted = 0
+        AND environment = #{environment}
+    </select>
+
+    <select id="getDeviceWithProductKey" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_device
+        WHERE product_key = #{productKey}
+        AND is_deleted = 0
+        AND environment = #{environment}
+    </select>
+
+    <select id="getDeviceWithOdmId" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_device
+        WHERE odm_tenant_id = #{odmTenantId}
+        AND is_deleted = 0
+        AND environment = #{environment}
+    </select>
+
+    <select id="getDeviceList" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_device
+        WHERE odm_tenant_id = #{odmTenantId}
+        AND is_deleted = 0
+        <if test="uniqueTdserverProductName != null and uniqueTdserverProductName !=''">
+            AND unique_tdserver_product_name = #{uniqueTdserverProductName}
+        </if>
+        <if test="nameLike != null and nameLike != ''">
+            AND device_name LIKE #{nameLike} escape '/'
+        </if>
+        AND environment = #{environment}
+        ORDER BY id DESC
+        LIMIT #{start}, #{pageSize}
+    </select>
+
+    <select id="getDeviceCount" resultType="java.lang.Long">
+        SELECT COUNT(id)
+        FROM iotx_haas_td_device
+        WHERE odm_tenant_id = #{odmTenantId}
+        AND is_deleted = 0
+        <if test="uniqueTdserverProductName != null and uniqueTdserverProductName !=''">
+            AND unique_tdserver_product_name = #{uniqueTdserverProductName}
+        </if>
+        <if test="nameLike != null and nameLike != ''">
+            AND device_name LIKE #{nameLike} escape '/'
+        </if>
+        AND environment = #{environment}
+    </select>
+
+    <select id="getBoundDeviceCount" resultType="java.lang.Long">
+        SELECT COUNT(id)
+        FROM iotx_haas_td_device
+        WHERE odm_tenant_id = #{odmTenantId}
+        AND is_deleted = 0
+        AND is_bound = 1
+        <if test="uniqueTdserverProductName != null and uniqueTdserverProductName !=''">
+            AND unique_tdserver_product_name = #{uniqueTdserverProductName}
+        </if>
+        <if test="nameLike != null and nameLike != ''">
+            AND device_name LIKE #{nameLike} escape '/'
+        </if>
+        AND environment = #{environment}
+    </select>
+
+    <select id="migrateDevice" resultType="java.lang.Long">
+        UPDATE iotx_haas_td_device
+        SET
+        <if test="toOdmTenantId != null">
+            odm_tenant_id = #{toOdmTenantId},
+        </if>
+        gmt_modified = now()
+        WHERE is_deleted = 0
+        AND unique_tdserver_product_name = #{uniqueTdserverProductName}
+        AND odm_tenant_id = #{odmTenantId}
+        AND environment = #{environment}
+    </select>
+
+
+</mapper>

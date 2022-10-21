@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aliyun.iotx.haas.tdserver.dal.dao.device.DeviceTrackDAO">
+    <sql id="column">
+        id                         as id
+        ,gmt_create                as gmtCreate
+        ,gmt_modified              as gmtModified
+        ,is_deleted                as isDeleted
+        ,product_key               as productKey
+        ,device_name               as deviceName
+        ,haas_user_id              as haasUserId
+        ,track_start_time          as trackStartTime
+        ,track_stop_time           as trackStopTime
+        ,track_start_gps_longitude as trackStartGpsLongitude
+        ,track_start_gps_latitude  as trackStartGpsLatitude
+        ,track_stop_gps_longitude  as trackStopGpsLongitude
+        ,track_stop_gps_latitude   as trackStopGpsLatitude
+        ,track_start_gps_nsew      as trackStartGpsNsew
+        ,track_stop_gps_nsew       as trackStopGpsNsew
+        ,track_start_gps_status    as trackStartGpsStatus
+        ,track_stop_gps_status     as trackStopGpsStatus
+        ,reserve                   as reserve
+        ,reserve2                  as reserve2
+        ,environment               as environment
+    </sql>
+
+    <insert id="insert" parameterType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceTrackDO">
+        INSERT INTO iotx_haas_td_device_track (
+        gmt_create
+        ,gmt_modified
+        ,is_deleted
+        ,product_key
+        ,device_name
+        ,haas_user_id
+        ,track_start_time
+        ,track_stop_time
+        ,track_start_gps_longitude
+        ,track_start_gps_latitude
+        ,track_stop_gps_longitude
+        ,track_stop_gps_latitude
+        ,track_start_gps_nsew
+        ,track_stop_gps_nsew
+        ,track_start_gps_status
+        ,track_stop_gps_status
+        ,reserve
+        ,reserve2
+        ,environment
+        ) VALUES
+        (
+        now()
+        ,now()
+        ,0
+        ,#{productKey}
+        ,#{deviceName}
+        ,#{haasUserId}
+        ,#{trackStartTime}
+        ,#{trackStopTime}
+        ,#{trackStartGpsLongitude}
+        ,#{trackStartGpsLatitude}
+        ,#{trackStopGpsLongitude}
+        ,#{trackStopGpsLatitude}
+        ,#{trackStartGpsNsew}
+        ,#{trackStopGpsNsew}
+        ,#{trackStartGpsStatus}
+        ,#{trackStopGpsStatus}
+        ,#{reserve}
+        ,#{reserve2}
+        ,#{environment}
+        )
+        <selectKey resultType="long" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID() AS id
+        </selectKey>
+    </insert>
+
+    <select id="getUserTrackList" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceTrackDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_device_track
+        WHERE haas_user_id = #{haasUserId}
+        AND is_deleted = 0
+        AND environment = #{environment}
+        ORDER BY track_start_time DESC
+        LIMIT #{start}, #{pageSize}
+    </select>
+
+    <select id="getDeviceTrackList" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceTrackDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_device_track
+        WHERE haas_user_id = #{haasUserId}
+        AND product_key = #{productKey}
+        AND device_name = #{deviceName}
+        AND is_deleted = 0
+        AND environment = #{environment}
+        ORDER BY track_start_time DESC
+        LIMIT #{start}, #{pageSize}
+    </select>
+
+</mapper>

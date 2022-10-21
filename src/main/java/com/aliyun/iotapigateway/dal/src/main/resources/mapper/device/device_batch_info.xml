@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aliyun.iotx.haas.tdserver.dal.dao.device.DeviceBatchInfoDAO">
+    <sql id="column">
+        id                            as id
+        ,product_key                  as productKey
+        ,odm_tenant_id                as odmTenantId
+        ,batch_id                     as batchId
+        ,unique_tdserver_product_name as uniqueTdserverProductName
+        ,start_device_name            as startDeviceName
+        ,end_device_name              as endDeviceName
+        ,device_number                as deviceNumber
+        ,is_deleted                   as isDeleted
+        ,gmt_create                   as gmtCreate
+        ,gmt_modified                 as gmtModified
+        ,batch_status                 as batchStatus
+        ,environment                  as environment
+    </sql>
+
+    <insert id="insert" parameterType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceBatchInfoDO">
+        INSERT INTO iotx_haas_td_device_batch (
+                product_key
+                ,odm_tenant_id
+                ,batch_id
+                ,unique_tdserver_product_name
+                ,start_device_name
+                ,end_device_name
+                ,device_number
+                ,is_deleted
+                ,gmt_create
+                ,gmt_modified
+                ,batch_status
+                ,environment
+                ) VALUES
+                 (
+                 #{productKey}
+                 ,#{odmTenantId}
+                 ,#{batchId}
+                 ,#{uniqueTdserverProductName}
+                 ,#{startDeviceName}
+                 ,#{endDeviceName}
+                 ,#{deviceNumber}
+                 ,0
+                 ,now()
+                 ,now()
+                 ,#{batchStatus}
+                 ,#{environment}
+                 )
+    </insert>
+
+    <update id="updateBatchStatus">
+        UPDATE iotx_haas_td_device_batch
+        SET batch_status = #{batchStatus},
+            gmt_modified = now()
+        WHERE odm_tenant_id = #{odmTenantId}
+          AND unique_tdserver_product_name = #{uniqueTdserverProductName}
+          AND batch_id = #{batchId}
+          AND is_deleted = 0
+          AND environment = #{environment}
+    </update>
+
+    <select id="getDeviceBatchInfoWithBatchId" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceBatchInfoDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_device_batch
+        WHERE odm_tenant_id = #{odmTenantId}
+        AND product_key = #{productKey}
+        AND batch_id = #{batchId}
+        AND is_deleted = 0
+        AND environment = #{environment}
+        LIMIT 1
+    </select>
+
+    <select id="getDeviceBatchInfoWithBatchIdAndProductId" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceBatchInfoDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_device_batch
+        WHERE odm_tenant_id = #{odmTenantId}
+        AND unique_tdserver_product_name = #{uniqueTdserverProductName}
+        AND batch_id = #{batchId}
+        AND is_deleted = 0
+        AND environment = #{environment}
+        LIMIT 1
+    </select>
+
+    <select id="getDeviceBatchInfoListWithOdmTenantId" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceBatchInfoDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_device_batch
+        WHERE odm_tenant_id = #{odmTenantId}
+        AND product_key = #{productKey}
+        AND is_deleted = 0
+        AND environment = #{environment}
+        ORDER BY id DESC
+        LIMIT #{start}, #{pageSize}
+    </select>
+
+    <select id="getDeviceBatchInfoListWithProductId" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceBatchInfoDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_device_batch
+        WHERE odm_tenant_id = #{odmTenantId}
+        AND unique_tdserver_product_name = #{uniqueTdserverProductName}
+        AND is_deleted = 0
+        AND environment = #{environment}
+        ORDER BY id DESC
+        LIMIT #{start}, #{pageSize}
+    </select>
+
+    <select id="getDeviceBatchCountWithProductId" resultType="java.lang.Long">
+        SELECT COUNT(id)
+        FROM iotx_haas_td_device_batch
+        WHERE odm_tenant_id = #{odmTenantId}
+        AND unique_tdserver_product_name = #{uniqueTdserverProductName}
+        AND is_deleted = 0
+        AND environment = #{environment}
+    </select>
+
+    <select id="getDeviceBatchInfoListWithStatus" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceBatchInfoDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_device_batch
+        WHERE batch_status = #{batchStatus}
+        AND is_deleted = 0
+        AND environment = #{environment}
+        ORDER BY id DESC
+        LIMIT #{start}, #{pageSize}
+    </select>
+</mapper>

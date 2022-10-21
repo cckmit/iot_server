@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aliyun.iotx.haas.tdserver.dal.dao.user.UserDAO">
+    <sql id="column">
+        id                 as id
+        ,gmt_create        as gmtCreate
+        ,gmt_modified      as gmtModified
+        ,is_deleted        as isDeleted
+        ,platform_name     as platformName
+        ,raw_user_id       as rawUserId
+        ,haas_user_id      as haasUserId
+        ,mobile            as mobile
+        ,reserved          as reserved
+        ,reserved2         as reserved2
+        ,is_agreement_signed as isAgreementSigned
+        ,is_using_sms_notification as isUsingSmsNotification
+    </sql>
+
+    <insert id="insert" parameterType="com.aliyun.iotx.haas.tdserver.dal.domain.user.UserDO">
+        INSERT INTO iotx_haas_td_user (
+        gmt_create
+        ,gmt_modified
+        ,is_deleted
+        ,platform_name
+        ,raw_user_id
+        ,haas_user_id
+        ,mobile
+        ,reserved
+        ,reserved2
+        ,is_agreement_signed
+        ,is_using_sms_notification
+        ) VALUES
+        (
+        now()
+        ,now()
+        ,0
+        ,#{platformName}
+        ,#{rawUserId}
+        ,#{haasUserId}
+        ,#{mobile}
+        ,#{reserved}
+        ,#{reserved2}
+        ,#{isAgreementSigned}
+        ,#{isUsingSmsNotification}
+        )
+        <selectKey resultType="long" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID() AS id
+        </selectKey>
+    </insert>
+
+    <select id="findUserByPlatform" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.user.UserDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_user
+        WHERE raw_user_id = #{rawUserId}
+        AND platform_name = #{platformName}
+        AND is_deleted = 0
+    </select>
+
+    <select id="findUserByHaasUserId" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.user.UserDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_user
+        WHERE haas_user_id = #{haasUserId}
+        AND is_deleted = 0
+    </select>
+
+    <update id="signAgreement">
+        UPDATE iotx_haas_td_user
+        SET is_agreement_signed = 1, gmt_modified = now()
+        WHERE haas_user_id = #{haasUserId}
+        AND is_deleted = 0
+    </update>
+
+    <update id="upgradeMobile">
+        UPDATE iotx_haas_td_user
+        SET mobile = #{mobile}, gmt_modified = now()
+        WHERE haas_user_id = #{haasUserId}
+        AND is_deleted = 0
+    </update>
+
+    <update id="upgradeSmsNotification">
+        UPDATE iotx_haas_td_user
+        SET is_using_sms_notification = #{isUsingSmsNotification}, gmt_modified = now()
+        WHERE haas_user_id = #{haasUserId}
+        AND is_deleted = 0
+    </update>
+</mapper>

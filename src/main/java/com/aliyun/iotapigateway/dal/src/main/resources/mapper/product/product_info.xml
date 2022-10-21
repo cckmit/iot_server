@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aliyun.iotx.haas.tdserver.dal.dao.product.ProductInfoDAO">
+    <sql id="column">
+        id                            as id
+        ,product_key                  as productKey
+        ,product_name                 as productName
+        ,unique_product_name          as uniqueProductName
+        ,odm_tenant_id                as odmTenantId
+        ,environment                  as environment
+        ,is_deleted                   as isDeleted
+        ,product_brand                as productBrand
+        ,product_model                as productModel
+        ,product_algo_type            as productAlgoType
+        ,is_support_2g                as isSupport2G
+        ,gmt_create                   as gmtCreate
+        ,gmt_modified                 as gmtModified
+        ,unique_tdserver_product_name as uniqueTdserverProductName
+        ,percentage_0                 as percentage0
+        ,percentage_20                as percentage20
+        ,percentage_40                as percentage40
+        ,percentage_60                as percentage60
+        ,percentage_80                as percentage80
+        ,product_status               as productStatus
+        ,product_image_file_id        as productImageFileId
+        ,image_url                    as image_url
+        ,advertisem_url               as advertisem_url
+        ,product_wheel_diameter       as productWheelDiameter
+        ,product_alias                as productAlias
+        ,isDisplayEnergy              as isDisplayEnergy
+        ,isDistantConfig              as isDistantConfig
+        ,isDisplayBicycleStatus       as isDisplayBicycleStatus
+        ,isUsingStorageLock           as isUsingStorageLock
+        ,isSupportKeyModel            as isSupportKeyModel
+        ,defaultKeyModel              as defaultKeyModel
+    </sql>
+
+    <insert id="insert" parameterType="com.aliyun.iotx.haas.tdserver.dal.domain.product.ProductInfoDO">
+        INSERT INTO iotx_haas_td_product (
+        product_key
+        ,product_name
+        ,unique_product_name
+        ,odm_tenant_id
+        ,environment
+        ,is_deleted
+        ,gmt_create
+        ,gmt_modified
+        ,product_brand
+        ,product_model
+        ,unique_tdserver_product_name
+        ,is_support_2g
+        ,percentage_0
+        ,percentage_20
+        ,percentage_40
+        ,percentage_60
+        ,percentage_80
+        ,product_status
+        ,product_image_file_id
+        ,image_url
+        ,advertisem_url
+        ,product_wheel_diameter
+        ,product_alias
+        ,isDisplayEnergy
+        ,isDistantConfig
+        ,isDisplayBicycleStatus
+        ,isUsingStorageLock
+        ,isSupportKeyModel
+        ,defaultKeyModel
+        ) VALUES
+        (
+        #{productKey}
+        ,#{productName}
+        ,#{uniqueProductName}
+        ,#{odmTenantId}
+        ,#{environment}
+        ,0
+        ,now()
+        ,now()
+        ,#{productBrand}
+        ,#{productModel}
+        ,#{uniqueTdserverProductName}
+        ,#{isSupport2G}
+        ,#{percentage0}
+        ,#{percentage20}
+        ,#{percentage40}
+        ,#{percentage60}
+        ,#{percentage80}
+        ,#{productStatus}
+        ,#{productImageFileId}
+        ,#{image_url}
+        ,#{advertisem_url}
+        ,#{productWheelDiameter}
+        ,#{productAlias}
+        ,#{isDisplayEnergy}
+        ,#{isDistantConfig}
+        ,#{isDisplayBicycleStatus}
+        ,#{isUsingStorageLock}
+        ,#{isSupportKeyModel}
+        ,#{defaultKeyModel}
+        )
+        <selectKey resultType="long" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID() AS id
+        </selectKey>
+    </insert>
+
+
+    <update id="updateProductInfo" parameterType="com.aliyun.iotx.haas.tdserver.dal.domain.product.ProductInfoDO">
+        UPDATE iotx_haas_td_product
+        SET
+        <if test="productKey != null">
+            product_key = #{productKey},
+        </if>
+        <if test="productName != null">
+            product_name = #{productName},
+        </if>
+        <if test="productBrand != null">
+            product_brand = #{productBrand},
+        </if>
+        <if test="productModel != null">
+            product_model = #{productModel},
+        </if>
+        <if test="isSupport2G != null">
+            is_support_2g = #{isSupport2G},
+        </if>
+        <if test="percentage0 != null">
+            percentage_0 = #{percentage0},
+        </if>
+        <if test="percentage20 != null">
+            percentage_20 = #{percentage20},
+        </if>
+        <if test="percentage40 != null">
+            percentage_40 = #{percentage40},
+        </if>
+        <if test="percentage60 != null">
+            percentage_60 = #{percentage60},
+        </if>
+        <if test="percentage80 != null">
+            percentage_80 = #{percentage80},
+        </if>
+        <if test="productStatus != null">
+            product_status = #{productStatus},
+        </if>
+        <if test="productImageFileId != null">
+            product_image_file_id = #{productImageFileId},
+        </if>
+        <if test="productWheelDiameter != null">
+            product_wheel_diameter = #{productWheelDiameter},
+        </if>
+        <if test="productAlias != null">
+            product_alias = #{productAlias},
+        </if>
+        <if test="isDisplayEnergy != null">
+            isDisplayEnergy = #{isDisplayEnergy},
+        </if>
+        <if test="isDistantConfig != null">
+            isDistantConfig = #{isDistantConfig},
+        </if>
+        <if test="isDisplayBicycleStatus != null">
+            isDisplayBicycleStatus = #{isDisplayBicycleStatus},
+        </if>
+        <if test="isUsingStorageLock != null">
+            isUsingStorageLock = #{isUsingStorageLock},
+        </if>
+        <if test="isSupportKeyModel != null">
+            isSupportKeyModel = #{isSupportKeyModel},
+        </if>
+        <if test="defaultKeyModel != null">
+            defaultKeyModel = #{defaultKeyModel},
+        </if>
+        <if test="odmTenantId != null">
+            odm_tenant_id = #{odmTenantId},
+        </if>
+        gmt_modified = now()
+        WHERE unique_tdserver_product_name = #{uniqueTdserverProductName}
+        AND is_deleted = 0
+        AND environment = #{environment}
+    </update>
+
+    <select id="getProductInfoListWithOdmTenantId" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.product.ProductInfoDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_product
+        WHERE odm_tenant_id = #{odmTenantId}
+        AND is_deleted = 0
+        AND environment = #{environment}
+        ORDER BY id DESC
+        LIMIT #{start}, #{pageSize}
+    </select>
+
+    <update id="updateProductAdvertiseImage">
+        UPDATE iotx_haas_td_product
+        SET
+        <if test="image_url != null">
+            image_url = #{image_url},
+        </if>
+        gmt_modified = now()
+        WHERE odm_tenant_id = #{odm_tenant_id}
+        AND is_deleted = 0
+        AND environment = #{environment}
+    </update>
+
+    <update id="updateProductAdvertiseUrl">
+        UPDATE iotx_haas_td_product
+        SET
+        <if test="advertisem_url != null">
+            advertisem_url = #{advertisem_url},
+        </if>
+        gmt_modified = now()
+        WHERE odm_tenant_id = #{odm_tenant_id}
+        AND is_deleted = 0
+        AND environment = #{environment}
+    </update>
+
+    <select id="getProductInfoListWithOdmTenantIdLike" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.product.ProductInfoDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_product
+        WHERE odm_tenant_id = #{odmTenantId}
+        <if test="brandLike != null and brandLike != ''">
+            AND product_brand LIKE #{brandLike} escape '/'
+        </if>
+        <if test="modelLike != null and modelLike != ''">
+            AND product_model LIKE #{modelLike} escape '/'
+        </if>
+        AND is_deleted = 0
+        AND environment = #{environment}
+        ORDER BY id DESC
+        LIMIT #{start}, #{pageSize}
+    </select>
+
+    <select id="getProductCountWithOdmTenantIdLike" resultType="java.lang.Long">
+        SELECT COUNT(id)
+        FROM iotx_haas_td_product
+        WHERE odm_tenant_id = #{odmTenantId}
+        <if test="brandLike != null and brandLike != ''">
+            AND product_brand LIKE #{brandLike} escape '/'
+        </if>
+        <if test="modelLike != null and modelLike != ''">
+            AND product_model LIKE #{modelLike} escape '/'
+        </if>
+        AND is_deleted = 0
+        AND environment = #{environment}
+    </select>
+
+    <select id="getProductInfoWithProductKey" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.product.ProductInfoDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_product
+        WHERE odm_tenant_id = #{odmTenantId}
+        AND product_key = #{productKey}
+        AND is_deleted = 0
+        AND environment = #{environment}
+        LIMIT 1
+    </select>
+
+    <select id="getProductInfoWithProductKeyAndUniqueTdserverProductName" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.product.ProductInfoDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_product
+        WHERE odm_tenant_id = #{odmTenantId}
+        AND product_key = #{productKey}
+        AND unique_tdserver_product_name = #{uniqueTdserverProductName}
+        AND is_deleted = 0
+        AND environment = #{environment}
+        LIMIT 1
+    </select>
+
+
+    <select id="getProductInfoWithProductName" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.product.ProductInfoDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_product
+        WHERE odm_tenant_id = #{odmTenantId}
+        AND product_name = #{productName}
+        AND is_deleted = 0
+        AND environment = #{environment}
+        LIMIT 1
+    </select>
+
+    <update id="updateProductSpecificInfo">
+        UPDATE iotx_haas_td_product
+        SET product_brand = #{productBrand}, product_alias = #{productAlias}, product_model = #{productModel}, product_algo_type = #{productAlgoType}, is_support_2g = #{isSupport2G},isDisplayEnergy = #{isDisplayEnergy},isDistantConfig = #{isDistantConfig}, isDisplayBicycleStatus = #{isDisplayBicycleStatus},  isUsingStorageLock = #{isUsingStorageLock}, isSupportKeyModel = #{isSupportKeyModel},defaultKeyModel = #{defaultKeyModel},gmt_modified = now()
+        WHERE product_key = #{productKey}
+        AND environment = #{environment}
+    </update>
+
+    <select id="getProductInfoWithProductKeyOnly" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.product.ProductInfoDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_product
+        WHERE product_key = #{productKey}
+        AND is_deleted = 0
+        AND environment = #{environment}
+        LIMIT 1
+    </select>
+
+    <select id="getProductInfoWithUniqueTdserverProductName" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.product.ProductInfoDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_product
+        WHERE unique_tdserver_product_name = #{uniqueTdserverProductName}
+        AND is_deleted = 0
+        AND environment = #{environment}
+        LIMIT 1
+    </select>
+
+    <select id="getProductInfoWithUniqueTdserverProductNameOnly" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.product.ProductInfoDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_product
+        WHERE unique_tdserver_product_name = #{uniqueTdserverProductName}
+        AND is_deleted = 0
+        AND environment = #{environment}
+        LIMIT 1
+    </select>
+
+    <update id="deleteProductWithUniqueTdserverProductName">
+        UPDATE iotx_haas_td_product
+        SET is_deleted = 1, gmt_modified = now()
+        WHERE odm_tenant_id = #{odmTenantId}
+        AND unique_tdserver_product_name = #{uniqueTdserverProductName}
+    </update>
+
+</mapper>

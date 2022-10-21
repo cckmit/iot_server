@@ -29,3 +29,13 @@ English | [简体中文](README-CN.md)
 [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
 Copyright (c) 2009-present, Alibaba Cloud All rights reserved.
+
+
+## Maven编译
+Maven compile
+
+## Maven打包
+Maven package
+
+## 运行
+java -jar target/iotapigateway-0.0.1.jar

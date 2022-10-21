@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aliyun.iotx.haas.tdserver.dal.dao.device.DeviceMacTaskDAO">
+    <sql id="column">
+        id                            as id
+        ,start_mac                    as startMac
+        ,end_mac                      as endMac
+        ,mac_status                   as macStatus
+        ,mac_count                    as macCount
+        ,environment                  as environment
+        ,gmt_create                   as gmtCreate
+        ,gmt_modified                 as gmtModified
+        ,unique_tdserver_product_name as uniqueTdserverProductName
+        ,batch_apply_id               as batchApplyId
+    </sql>
+
+    <insert id="insert" parameterType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceMacDO">
+        INSERT INTO iotx_haas_td_device_mac (
+                 start_mac
+                ,end_mac
+                ,mac_status
+                ,mac_count
+                ,environment
+                ,gmt_create
+                ,gmt_modified
+                ,unique_tdserver_product_name
+                ,batch_apply_id
+                ) VALUES
+                 (
+                 #{startMac}
+                 ,#{endMac}
+                 ,#{macStatus}
+                 ,#{macCount}
+                 ,#{environment}
+                 ,now()
+                 ,now()
+                 ,#{uniqueTdserverProductName}
+                 ,#{batchApplyId}
+                 )
+    </insert>
+
+    <update id="update" parameterType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceMacDO">
+        UPDATE iotx_haas_td_device_mac
+        SET end_mac = #{endMac},
+            mac_status = #{macStatus},
+            mac_count = #{macCount},
+            unique_tdserver_product_name = #{uniqueTdserverProductName},
+            batch_apply_id = #{batchApplyId},
+            gmt_modified = now()
+        WHERE id = #{id}
+          AND start_mac = #{startMac}
+          AND environment = #{environment}
+    </update>
+
+    <select id="getDeviceMacWithExactlyNumForUpdate" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceMacDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_device_mac
+        WHERE mac_count = #{macCount}
+        AND mac_status = #{macStatus}
+        AND environment = #{environment}
+        LIMIT 1
+        FOR UPDATE
+    </select>
+
+    <select id="getDeviceMacWithEnoughNumForUpdate" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceMacDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_device_mac
+        WHERE mac_count >= #{macCount}
+        AND mac_status = #{macStatus}
+        AND environment = #{environment}
+        LIMIT 1
+        FOR UPDATE
+    </select>
+
+    <select id="getDeviceMacWithMacApplyIdForUpdate" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceMacDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_device_mac
+        WHERE batch_apply_id = #{batchApplyId}
+        AND mac_status = #{macStatus}
+        AND environment = #{environment}
+        LIMIT 1
+        FOR UPDATE
+    </select>
+
+    <select id="getDeviceMacForUpdate" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceMacDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_device_mac
+        WHERE unique_tdserver_product_name = #{uniqueTdserverProductName}
+        AND start_mac = #{startMac}
+        AND end_mac = #{endMac}
+        AND environment = #{environment}
+        LIMIT 1
+        FOR UPDATE
+    </select>
+</mapper>

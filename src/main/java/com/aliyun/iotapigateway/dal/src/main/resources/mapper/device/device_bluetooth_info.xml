@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aliyun.iotx.haas.tdserver.dal.dao.device.DeviceBluetoothInfoDAO">
+    <sql id="column">
+        id                       as id
+        ,gmt_create              as gmtCreate
+        ,gmt_modified            as gmtModified
+        ,is_deleted              as isDeleted
+        ,haas_user_id            as haasUserId
+        ,product_key             as productKey
+        ,device_name             as deviceName
+        ,bluetooth_device_id_v1  as bluetoothDeviceIdV1
+        ,bluetooth_device_id_v2  as bluetoothDeviceIdV2
+        ,environment             as environment
+    </sql>
+
+    <insert id="insert" parameterType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceBluetoothInfoDO">
+        INSERT INTO iotx_haas_td_device_bluetooth (
+        gmt_create
+        ,gmt_modified
+        ,is_deleted
+        ,haas_user_id
+        ,product_key
+        ,device_name
+        ,bluetooth_device_id_v1
+        ,bluetooth_device_id_v2
+        ,environment
+        ) VALUES
+        (
+        now()
+        ,now()
+        ,0
+        ,#{haasUserId}
+        ,#{productKey}
+        ,#{deviceName}
+        ,#{bluetoothDeviceIdV1}
+        ,#{bluetoothDeviceIdV2}
+        ,#{environment}
+        )
+        <selectKey resultType="long" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID() AS id
+        </selectKey>
+    </insert>
+
+    <update id="updateDeviceBluetoothInfo" parameterType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceBluetoothInfoDO">
+        UPDATE iotx_haas_td_device_bluetooth
+        SET
+        <if test="haasUserId != null">
+            haas_user_id = #{haasUserId},
+        </if>
+        <if test="productKey != null">
+            product_key = #{productKey},
+        </if>
+        <if test="deviceName != null">
+            device_name = #{deviceName},
+        </if>
+        <if test="bluetoothDeviceIdV1 != null">
+            bluetooth_device_id_v1 = #{bluetoothDeviceIdV1},
+        </if>
+        <if test="bluetoothDeviceIdV2 != null">
+            bluetooth_device_id_v2 = #{bluetoothDeviceIdV2},
+        </if>
+        <if test="environment != null">
+            environment = #{environment},
+        </if>
+        gmt_modified = now()
+        WHERE id = #{id}
+        AND is_deleted = 0
+    </update>
+
+    <select id="getDeviceBluetoothInfo" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceBluetoothInfoDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_device_bluetooth
+        WHERE haas_user_id = #{haasUserId}
+        AND device_name = #{deviceName}
+        AND product_key = #{productKey}
+        AND environment = #{environment}
+        AND is_deleted = 0
+    </select>
+
+    <select id="getDeviceBluetoothInfoWithoutUserID" resultType="com.aliyun.iotx.haas.tdserver.dal.domain.device.DeviceBluetoothInfoDO">
+        SELECT
+        <include refid="column"/>
+        FROM iotx_haas_td_device_bluetooth
+        WHERE device_name = #{deviceName}
+        AND product_key = #{productKey}
+        AND environment = #{environment}
+        AND is_deleted = 0
+    </select>
+
+    <update id="removeDeviceBluetoothInfo">
+        UPDATE iotx_haas_td_device_bluetooth
+        SET
+        is_deleted = 1,
+        gmt_modified = now()
+        WHERE haas_user_id = #{haasUserId}
+        AND device_name = #{deviceName}
+        AND product_key = #{productKey}
+        AND environment = #{environment}
+        AND is_deleted = 0
+    </update>
+
+    <update id="removeDeviceBluetoothInfoWithoutUserID">
+        UPDATE iotx_haas_td_device_bluetooth
+        SET
+        is_deleted = 1,
+        gmt_modified = now()
+        WHERE device_name = #{deviceName}
+        AND product_key = #{productKey}
+        AND environment = #{environment}
+        AND is_deleted = 0
+    </update>
+
+</mapper>
